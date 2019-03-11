@@ -13,6 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="aCore\**" />
+    <Content Remove="aCore\**" />
+    <EmbeddedResource Remove="aCore\**" />
+    <None Remove="aCore\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Mapster" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -22,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="aCore\" />
     <Folder Include="BusinessLogic\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

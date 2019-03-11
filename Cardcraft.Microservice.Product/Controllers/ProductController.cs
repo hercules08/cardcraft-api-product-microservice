@@ -1,10 +1,13 @@
-﻿using Cardcraft.Microservice.Product.Model;
+﻿using Cardcraft.Microservice.Product.Context;
+using Cardcraft.Microservice.Product.Model;
 using Cardcraft.Microservice.Product.Persistance;
 using Cardcraft.Microservice.Product.RequestModels;
 using Cardcraft.Microservice.Product.Stubs;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cardcraft.Microservice.Product.Controllers
 {
@@ -13,10 +16,12 @@ namespace Cardcraft.Microservice.Product.Controllers
     public class ProductController : ControllerBase
     {
         private IProductRepository _productRepository;
+        private ProductDbContext _context;
 
-        public ProductController()//(IProductRepository productRepository)
+        public ProductController(ProductDbContext context)//(IProductRepository productRepository)
         {
             //_productRepository = productRepository;
+            _context = context;
         }
 
         //[HttpPost]
@@ -30,7 +35,46 @@ namespace Cardcraft.Microservice.Product.Controllers
         [Route("GetTrendingCards")]
         public ActionResult GetTrendingCards()
         {
-            return Ok(CardsStub.TrendingCards);
+            //
+            List<BusinessObject.Card> trendingCards = _context.Cards.OrderByDescending(x => x.ViewCount)
+                .Take(50).Select( x => new BusinessObject.Card {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            if (trendingCards == null ||
+                trendingCards.Count == 0)
+                trendingCards = CardsStub.TrendingCards;
+
+            return Ok(trendingCards);
+        }
+
+        [HttpGet]
+        [Route("GetAllCards")]
+        public ActionResult GetAllCards(int? searchOffset)
+        {
+            if (searchOffset is null)
+                searchOffset = 0;
+
+            //
+            List<BusinessObject.Card> trendingCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+                .Take(50).Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            if (trendingCards == null ||
+                trendingCards.Count == 0)
+                trendingCards = CardsStub.TrendingCards;
+
+            return Ok(trendingCards);
         }
 
         [HttpGet]
