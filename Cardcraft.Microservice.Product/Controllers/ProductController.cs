@@ -18,9 +18,9 @@ namespace Cardcraft.Microservice.Product.Controllers
         private IProductRepository _productRepository;
         private ProductDbContext _context;
 
-        public ProductController(ProductDbContext context)//(IProductRepository productRepository)
+        public ProductController(ProductDbContext context, IProductRepository productRepository)
         {
-            //_productRepository = productRepository;
+            _productRepository = productRepository;
             _context = context;
         }
 
