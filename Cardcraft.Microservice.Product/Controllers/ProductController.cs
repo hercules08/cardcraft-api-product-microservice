@@ -60,8 +60,68 @@ namespace Cardcraft.Microservice.Product.Controllers
                 searchOffset = 0;
 
             //
-            List<BusinessObject.Card> trendingCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
-                .Take(50).Select(x => new BusinessObject.Card
+            List<BusinessObject.Card> trendingCards = _context.Cards.OrderByDescending(x => x.ViewCount)
+                .Where(x => x.ViewCount == 1).Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            ////
+            //List<BusinessObject.Card> allCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+            //    .Where(x =>
+            //    x.Category == "Birthday"
+            //    || x.Category == "Graduation"
+            //    || x.Category == "Mother's Day"
+            //    || x.Category == "Camping").Select(x => new BusinessObject.Card
+            //    {
+            //        Category = x.Category,
+            //        DescriptionText = x.DescriptionText,
+            //        ImageUrl = x.ImageUrl,
+            //        Id = x.Id,
+            //        Name = x.Name
+            //    }).ToList();
+
+            //
+            List<BusinessObject.Card> BirthdayCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+                .Where(x =>
+                x.Category == "Birthday").Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            //
+            List<BusinessObject.Card> GraduationCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+                .Where(x => x.Category == "Graduation").Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            //
+            List<BusinessObject.Card> MothersCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+                .Where(x => x.Category == "Mother's Day").Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            //
+            List<BusinessObject.Card> CampingCards = _context.Cards.OrderBy(x => x.Id).Skip((int)searchOffset)
+                .Where(x => x.Category == "Camping").Select(x => new BusinessObject.Card
                 {
                     Category = x.Category,
                     DescriptionText = x.DescriptionText,
@@ -74,6 +134,11 @@ namespace Cardcraft.Microservice.Product.Controllers
                 trendingCards.Count == 0)
                 trendingCards = CardsStub.TrendingCards;
 
+
+            trendingCards.AddRange(BirthdayCards);
+            trendingCards.AddRange(GraduationCards);
+            trendingCards.AddRange(MothersCards);
+            trendingCards.AddRange(CampingCards);
             return Ok(trendingCards);
         }
 
