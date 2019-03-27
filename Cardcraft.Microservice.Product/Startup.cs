@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -27,8 +28,16 @@ namespace Cardcraft.Microservice.Product
         {
             string connectionString = Configuration["ConnectionStrings:ProductDbContext"];
 
-            services.AddDbContext<ProductDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            services.AddDbContextPool<ProductDbContext>( // replace "YourDbContext" with the class name of your DbContext
+                options => options.UseMySql(connectionString, // replace with your Connection String
+                    mySqlOptions =>
+                    {
+                        mySqlOptions.ServerVersion(new Version(5, 7, 17), ServerType.MySql); // replace with your Server Version and Type
+                    }
+            ));
+
+            //services.AddDbContext<ProductDbContext>(options =>
+            //    options.UseSqlServer(connectionString));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
