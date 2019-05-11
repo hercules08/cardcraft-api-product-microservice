@@ -61,7 +61,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
             //
             List<BusinessObject.Card> trendingCards = _context.Cards.OrderByDescending(x => x.ViewCount)
-                .Where(x => x.ViewCount == 1).Select(x => new BusinessObject.Card
+                .Where(x => x.ViewCount == 2).Select(x => new BusinessObject.Card
                 {
                     Category = x.Category,
                     DescriptionText = x.DescriptionText,
