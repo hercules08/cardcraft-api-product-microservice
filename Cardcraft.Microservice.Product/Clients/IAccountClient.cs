@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Cardcraft.Microservice.aCore;
+using Cardcraft.Microservice.Product.RequestModels;
 using System.Threading.Tasks;
 
 namespace Cardcraft.Microservice.Product.Clients
 {
-    interface IAccountClient
+    public interface IAccountClient
     {
+        Task<IAPIResponse> UpdateUserCredits(UpdateUserCreditRequest request);
     }
 }

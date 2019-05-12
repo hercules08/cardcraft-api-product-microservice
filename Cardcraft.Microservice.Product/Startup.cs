@@ -1,4 +1,5 @@
-﻿using Cardcraft.Microservice.Product.Context;
+﻿using Cardcraft.Microservice.Product.Clients;
+using Cardcraft.Microservice.Product.Context;
 using Cardcraft.Microservice.Product.Persistance;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -52,6 +53,7 @@ namespace Cardcraft.Microservice.Product
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddScoped<IAccountClient, AccountClient>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }
 

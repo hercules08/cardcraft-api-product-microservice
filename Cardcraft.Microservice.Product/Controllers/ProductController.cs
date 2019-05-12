@@ -1,4 +1,6 @@
-﻿using Cardcraft.Microservice.Product.Context;
+﻿using Cardcraft.Microservice.aCore;
+using Cardcraft.Microservice.Product.Clients;
+using Cardcraft.Microservice.Product.Context;
 using Cardcraft.Microservice.Product.Model;
 using Cardcraft.Microservice.Product.Persistance;
 using Cardcraft.Microservice.Product.RequestModels;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cardcraft.Microservice.Product.Controllers
 {
@@ -17,11 +20,15 @@ namespace Cardcraft.Microservice.Product.Controllers
     {
         private IProductRepository _productRepository;
         private ProductDbContext _context;
+        private IAccountClient _accountClient;
 
-        public ProductController(ProductDbContext context, IProductRepository productRepository)
+        public ProductController(ProductDbContext context
+            , IProductRepository productRepository
+            , IAccountClient client)
         {
             _productRepository = productRepository;
             _context = context;
+            _accountClient = client;
         }
 
         //[HttpPost]
@@ -151,12 +158,28 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpPost]
         [Route("OrderCard")]
-        public ActionResult OrderCard([FromBody]CardOrderRequest model)
+        public async Task<IActionResult> OrderCard([FromBody]CardOrderRequest model)
         {
             Order order = model.Adapt<Order>();
             order.CreatedDate = DateTime.UtcNow;
             bool success = _productRepository.AddOrder(order);
-            return Ok(success);
+
+            if (success)
+            {
+                IAPIResponse response = await _accountClient.UpdateUserCredits(new UpdateUserCreditRequest
+                {
+                    UserProfileId = model.UserProfileId,
+                    NumOfCreditsToAdd = -1
+                });
+
+                if(response.Success)
+                {
+                    APIResponse<UpdateUserCreditResponse> creditResponse = (APIResponse<UpdateUserCreditResponse>)response;
+                    return Ok(creditResponse);
+                }
+            }
+
+            return BadRequest();
         }
 
         [HttpGet]
