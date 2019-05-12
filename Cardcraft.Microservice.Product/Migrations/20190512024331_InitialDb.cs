@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cardcraft.Microservice.Product.Migrations
@@ -12,7 +13,7 @@ namespace Cardcraft.Microservice.Product.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ImageUrl = table.Column<string>(nullable: true),
                     DescriptionText = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
@@ -29,7 +30,7 @@ namespace Cardcraft.Microservice.Product.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Email = table.Column<string>(nullable: true),
                     Sender = table.Column<string>(nullable: true),
                     Recipient = table.Column<string>(nullable: true),
@@ -37,7 +38,9 @@ namespace Cardcraft.Microservice.Product.Migrations
                     FromAddress = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     CardId = table.Column<int>(nullable: false),
-                    UserProfileId = table.Column<string>(nullable: true)
+                    UserProfileId = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: true),
+                    FulfillmentDate = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {

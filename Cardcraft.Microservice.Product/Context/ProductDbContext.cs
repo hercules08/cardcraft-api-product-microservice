@@ -12,5 +12,6 @@ namespace Cardcraft.Microservice.Product.Context
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<Card> Cards { get; set; }
+
     }
 }

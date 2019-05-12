@@ -1,7 +1,10 @@
-﻿namespace Cardcraft.Microservice.Product.Model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Cardcraft.Microservice.Product.Model
 {
     public class Card
     {
+        [Key]
         public int Id { get; set; }
         public string ImageUrl { get; set; }
         public string DescriptionText { get; set; }

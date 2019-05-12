@@ -154,6 +154,7 @@ namespace Cardcraft.Microservice.Product.Controllers
         public ActionResult OrderCard([FromBody]CardOrderRequest model)
         {
             Order order = model.Adapt<Order>();
+            order.CreatedDate = DateTime.UtcNow;
             bool success = _productRepository.AddOrder(order);
             return Ok(success);
         }
