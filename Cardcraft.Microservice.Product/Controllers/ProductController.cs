@@ -1,4 +1,5 @@
 ﻿using Cardcraft.Microservice.aCore;
+using Cardcraft.Microservice.Product.BusinessLogic.Interface;
 using Cardcraft.Microservice.Product.Clients;
 using Cardcraft.Microservice.Product.Context;
 using Cardcraft.Microservice.Product.Model;
@@ -6,7 +7,9 @@ using Cardcraft.Microservice.Product.Persistance;
 using Cardcraft.Microservice.Product.RequestModels;
 using Cardcraft.Microservice.Product.Stubs;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +19,18 @@ namespace Cardcraft.Microservice.Product.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    [Authorize]
+    public class ProductController : ApiControllerBase
     {
         private IProductRepository _productRepository;
         private ProductDbContext _context;
         private IAccountClient _accountClient;
 
-        public ProductController(ProductDbContext context
+        public ProductController(IProductManager productManager
+            , ILogger<ProductController> logger
+            , ProductDbContext context
             , IProductRepository productRepository
-            , IAccountClient client)
+            , IAccountClient client) : base(productManager, logger)
         {
             _productRepository = productRepository;
             _context = context;
@@ -40,11 +46,13 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpGet]
         [Route("GetTrendingCards")]
+        [AllowAnonymous]
         public ActionResult GetTrendingCards()
         {
             //
             List<BusinessObject.Card> trendingCards = _context.Cards.OrderByDescending(x => x.ViewCount)
-                .Take(50).Select( x => new BusinessObject.Card {
+                .Take(50).Select(x => new BusinessObject.Card
+                {
                     Category = x.Category,
                     DescriptionText = x.DescriptionText,
                     ImageUrl = x.ImageUrl,
@@ -61,6 +69,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpGet]
         [Route("GetAllCards")]
+        [AllowAnonymous]
         public ActionResult GetAllCards(int? searchOffset)
         {
             if (searchOffset is null)
@@ -151,6 +160,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpGet]
         [Route("SearchCards")]
+        [AllowAnonymous]
         public ActionResult SearchCards(string searchTerms)
         {
             return Ok();
@@ -168,11 +178,12 @@ namespace Cardcraft.Microservice.Product.Controllers
             {
                 IAPIResponse response = await _accountClient.UpdateUserCredits(new UpdateUserCreditRequest
                 {
-                    UserProfileId = model.UserProfileId,
+                    UserProfileId = CONTEXT_USER,
+                    AccessToken = CONTEXT_TOKEN,
                     NumOfCreditsToAdd = -1
                 });
 
-                if(response.Success)
+                if (response.Success)
                 {
                     APIResponse<UpdateUserCreditResponse> creditResponse = (APIResponse<UpdateUserCreditResponse>)response;
                     return Ok(creditResponse);
@@ -192,6 +203,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpGet]
         [Route("TestHealth")]
+        [AllowAnonymous]
         public ActionResult TestHealth(bool throwException)
         {
             if (throwException)

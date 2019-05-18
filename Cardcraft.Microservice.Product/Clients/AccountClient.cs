@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Cardcraft.Microservice.Product.Clients
@@ -51,6 +52,7 @@ namespace Cardcraft.Microservice.Product.Clients
             var updateUserCreditResource = $"api/account/updateusercredits";
             using (var httpClient = new HttpClient())
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.AccessToken);
                 httpClient.BaseAddress = new Uri(accountServiceBaseUrl);
                 return await httpClient.PostAsJsonAsync<UpdateUserCreditRequest>(updateUserCreditResource, request);
             }

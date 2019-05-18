@@ -9,6 +9,5 @@
         public string FromAddress { get; set; }
         public string Message { get; set; }
         public int CardId { get; set; }
-        public string UserProfileId { get; set; }
     }
 }
