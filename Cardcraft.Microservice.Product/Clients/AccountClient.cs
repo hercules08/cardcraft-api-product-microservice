@@ -49,7 +49,7 @@ namespace Cardcraft.Microservice.Product.Clients
         private async Task<HttpResponseMessage> UpdateUserCreditsFromAccountService(UpdateUserCreditRequest request)
         {
             var accountServiceBaseUrl = _configuration["AccountServiceBaseUrl"];
-            var updateUserCreditResource = $"api/account/updateusercredits";
+            var updateUserCreditResource = "api/account/updateusercredits";
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.AccessToken);
