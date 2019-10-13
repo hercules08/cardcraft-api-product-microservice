@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Cardcraft.Microservice.Product.Model
 {
@@ -11,5 +12,6 @@ namespace Cardcraft.Microservice.Product.Model
         public string Name { get; set; }
         public string Category { get; set; }
         public int ViewCount { get; set; }
+        public ICollection<CardTag> CardTags { get; set; }
     }
 }
