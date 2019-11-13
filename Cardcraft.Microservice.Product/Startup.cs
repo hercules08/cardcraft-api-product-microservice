@@ -62,12 +62,12 @@ namespace Cardcraft.Microservice.Product
                 {
                     options.Authority = Configuration["TOKEN_AUTHORITY"];
                     options.Audience = Configuration["API_AUDIENCE"];
-                    if (Environment.IsDevelopment())
+                    if (!Environment.IsProduction())
                         options.RequireHttpsMetadata = false;
                 });
 
 
-            if (Environment.IsDevelopment())
+            if (!Environment.IsProduction())
             {
                 //Accept all server certificate
                 ServicePointManager.ServerCertificateValidationCallback =
