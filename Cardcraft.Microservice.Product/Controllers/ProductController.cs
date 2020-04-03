@@ -45,6 +45,24 @@ namespace Cardcraft.Microservice.Product.Controllers
         //}
 
         [HttpGet]
+        [Route("GetCardById/{id:int}")]
+        [AllowAnonymous]
+        public ActionResult GetCardById(int id)
+        {
+            Card foundCard = _context.Cards.FirstOrDefault(x => x.Id == id);
+
+            if(foundCard != null)
+            {
+                return Ok(foundCard);
+            }
+            else
+            {
+                return BadRequest("Unable to find the card");
+            }
+
+        }
+
+        [HttpGet]
         [Route("GetTrendingCards")]
         [AllowAnonymous]
         public ActionResult GetTrendingCards()
