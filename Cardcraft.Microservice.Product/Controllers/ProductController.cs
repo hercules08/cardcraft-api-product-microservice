@@ -62,6 +62,30 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         }
 
+        [Route("GetCardsByCategory")]
+        [AllowAnonymous]
+        public ActionResult GetCardsByCategory(string category)
+        {
+            List<BusinessObject.Card> foundCards = _context.Cards
+                .Where(x => x.Category.ToLower().Trim() == category.ToLower().Trim())
+                .OrderByDescending(x => x.ViewCount)
+                .Select(x => new BusinessObject.Card
+                {
+                    Category = x.Category,
+                    DescriptionText = x.DescriptionText,
+                    ImageUrl = x.ImageUrl,
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
+
+            if (foundCards == null ||
+                foundCards.Count == 0)
+                foundCards = CardsStub.TrendingCards;
+
+            return Ok(foundCards);
+        }
+
+
         [HttpGet]
         [Route("GetTrendingCards")]
         [AllowAnonymous]
