@@ -62,6 +62,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         }
 
+        [HttpGet]
         [Route("GetCardsByCategory")]
         [AllowAnonymous]
         public ActionResult GetCardsByCategory(string category)
