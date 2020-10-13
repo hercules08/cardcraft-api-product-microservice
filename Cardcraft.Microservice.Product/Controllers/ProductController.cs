@@ -9,6 +9,7 @@ using Cardcraft.Microservice.Product.Stubs;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -45,13 +46,22 @@ namespace Cardcraft.Microservice.Product.Controllers
         //}
 
         [HttpGet]
+        [Route("GetCardCategories")]
+        [AllowAnonymous]
+        public ActionResult GetCategories()
+        {
+            var allCategories = _context.Cards.Select(x => x.Category).Distinct().OrderBy(x => x).ToList();
+            return Ok(allCategories);
+        }
+
+        [HttpGet]
         [Route("GetCardById/{id:int}")]
         [AllowAnonymous]
         public ActionResult GetCardById(int id)
         {
             Card foundCard = _context.Cards.FirstOrDefault(x => x.Id == id);
 
-            if(foundCard != null)
+            if (foundCard != null)
             {
                 return Ok(foundCard);
             }
@@ -211,7 +221,7 @@ namespace Cardcraft.Microservice.Product.Controllers
 
         [HttpPost]
         [Route("OrderCard")]
-        public async Task<IActionResult> OrderCard([FromBody]CardOrderRequest model)
+        public async Task<IActionResult> OrderCard([FromBody] CardOrderRequest model)
         {
             Order order = model.Adapt<Order>();
             order.CreatedDate = DateTime.UtcNow;
