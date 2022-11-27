@@ -128,7 +128,8 @@ namespace Cardcraft.Microservice.Product.Controllers
             if (searchOffset is null)
                 searchOffset = 0;
 
-            //
+            // TODO Replace with code that reads from Shopify Backend
+            // 
             List<BusinessObject.Card> trendingCards = _context.Cards.OrderByDescending(x => x.ViewCount)
                 .Where(x => x.ViewCount == 2).Select(x => new BusinessObject.Card
                 {
@@ -244,6 +245,34 @@ namespace Cardcraft.Microservice.Product.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("DeleteOrders")]
+        public async Task<IActionResult> DeleteOrders(DeleteUserRequest request)
+        {
+            try
+            {
+                if (request.UserProfileId == CONTEXT_USER)
+                {
+                    var foundOrders = _context.Orders.Where(x => x.UserProfileId == CONTEXT_USER);
+                    if (foundOrders.Any())
+                    {
+                        _context.Orders.RemoveRange(foundOrders);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    return Ok();
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
